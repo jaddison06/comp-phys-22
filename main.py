@@ -4,6 +4,7 @@ from vector import *
 from particle import *
 from matplotlib import pyplot as plt
 from math import degrees, radians, atan
+import numpy as np
 
 def coulombs(esu: float) -> float:
     '''Convert electrostatic charge units to Coulombs'''
@@ -22,7 +23,7 @@ def F(Q1: float, Q2: float, r: float) -> float:
     return coulombs(coulombs(out))
 
 def main():
-    particles = {d : Particle(V2(-20, d), V2(1, 0)) for d in range(-10, 11)}
+    particles = {d : Particle(V2(-20, d), V2(1, 0)) for d in np.arange(-2, 2, 0.004)}
     goldPos = V2(0, 0)
     for particle in particles.values():
         f = F(2, 79, particle.pos.dst(goldPos))
@@ -40,12 +41,17 @@ def main():
             ))
             particle.tick()
     
+    x: list[float] = []
+    y: list[float] = []
+
     for startY, particle in particles.items():
-        angle = degrees(atan(radians(
+        x.append(startY)
+        y.append(degrees(atan(radians(
             (particle.pos.y - goldPos.y) /
             (particle.pos.x - goldPos.x)
-        )))
-        plt.plot(startY, angle, 'bo')
+        ))))
+    
+    plt.plot(x, y)
     
     matplotlib.use('TKAgg')
     plt.show()
